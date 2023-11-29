@@ -72,7 +72,7 @@ O projeto é composto de 4 entidades importantes para sua estrutura:
   <summary><strong> 🗓 Data de Entrega</strong></summary><br />
 
   * Projeto individual;
-  * Serão `X` dias de projeto;
+  * Serão `7` dias de projeto;
   * Data de entrega para avaliação regular do projeto: `XX/XX/XXXX 14:00`.
 
 </details>
