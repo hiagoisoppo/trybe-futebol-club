@@ -2,6 +2,7 @@ import * as express from 'express';
 import 'express-async-errors';
 
 import errorMiddleware from './middlewares/errorMiddleware';
+import router from './routes';
 
 class App {
   public app: express.Express;
@@ -10,7 +11,7 @@ class App {
     this.app = express();
 
     this.config();
-
+    this.routes();
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
 
@@ -20,7 +21,11 @@ class App {
   }
 
   private config():void {
-    const accessControl: express.RequestHandler = (_req, res, next) => {
+    const accessControl: express.RequestHandler = (
+      _req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) => {
       res.header('Access-Control-Allow-Origin', '*');
       res.header('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS,PUT,PATCH');
       res.header('Access-Control-Allow-Headers', '*');
@@ -29,6 +34,10 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+  }
+
+  private routes(): void {
+    this.app.use(router);
   }
 
   public start(PORT: string | number): void {
