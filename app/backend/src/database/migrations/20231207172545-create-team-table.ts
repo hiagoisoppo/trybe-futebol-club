@@ -10,6 +10,7 @@ export default {
         primaryKey: true,
       },
       teamName: {
+        field: 'team_name',
         type: DataTypes.STRING,
         allowNull: false,
       },

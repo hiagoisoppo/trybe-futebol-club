@@ -11,7 +11,6 @@ export default {
       },
       username: {
         type: DataTypes.STRING,
-        unique: true,
         allowNull: false,
       },
       role: {
