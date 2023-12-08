@@ -1,39 +1,38 @@
+import { ITeamModel } from '../Interfaces/Team/ITeamModel';
 import SequelizeTeam from '../database/models/SequelizeTeam';
-import ITeam from '../Interfaces/Team/ITeam';
-import ICRUD from '../Interfaces/ICRUD';
-import CustomError from '../utils/CustomError';
+import { TeamLessId } from '../Interfaces/Team/TeamLessId';
 
-export default class TeamModel implements ICRUD<ITeam, ITeam[], string, ITeam> {
+export default class TeamModel implements ITeamModel {
   private model = SequelizeTeam;
 
-  public async find(id: number): Promise<ITeam> {
+  public async find(id: number): Promise<SequelizeTeam | null> {
     const team = await this.model.findByPk(id);
-    if (!team) throw new CustomError('Team not found', 404);
-    return team.dataValues;
+    return team;
   }
 
-  public async list(): Promise<ITeam[]> {
+  public async list(): Promise<SequelizeTeam[]> {
     const teams = await this.model.findAll();
-    if (!teams) throw new CustomError('Internal server error', 500);
     return teams;
   }
 
-  public async create(teamName: string): Promise<ITeam> {
-    const team = await this.model.findOne({ where: { teamName } });
-    if (team) throw new CustomError('Team already exists', 400);
-
+  public async create({ teamName }: TeamLessId): Promise<SequelizeTeam> {
     const newTeam = await this.model.create({ teamName });
-    return newTeam.dataValues;
+    return newTeam;
   }
 
-  public async update(id: number, teamName: string): Promise<ITeam> {
+  public async update(id: number, { teamName }: TeamLessId): Promise<SequelizeTeam | null> {
     await this.model.update({ teamName }, { where: { id } });
-    const team = await this.model.findByPk(id);
-    if (!team) throw new CustomError('Team not found', 404);
-    return team.dataValues;
+    const updatedTeam = await this.model.findByPk(id);
+    return updatedTeam;
   }
 
-  public async delete(id: number): Promise<void> {
-    await this.model.destroy({ where: { id } });
+  public async delete(id: number): Promise<number> {
+    const deletedId = await this.model.destroy({ where: { id } });
+    return deletedId;
+  }
+
+  public async findByName(teamName: string): Promise<SequelizeTeam | null> {
+    const team = await this.model.findOne({ where: { teamName } });
+    return team;
   }
 }

@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import TeamRoute from './TeamRoute';
 
 const router = Router();
 
-// router.use('/teams', );
+router.use('/teams', TeamRoute);
 // router.use('/login', );
 // router.use('/matches', );
 // router.use('/leaderboard', );
