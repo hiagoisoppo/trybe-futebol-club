@@ -6,6 +6,8 @@ import chaiHttp = require('chai-http');
 import { app } from '../../../app';
 import SequelizeTeam from '../../../database/models/SequelizeTeam';
 
+chai.use(chaiHttp);
+
 describe('Integration tests on the /teams/:id route - DELETE delete()', function () {
   beforeEach(function () { sinon.restore(); });
 

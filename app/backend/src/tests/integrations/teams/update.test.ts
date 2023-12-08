@@ -7,6 +7,8 @@ import { app } from '../../../app';
 import SequelizeTeam from '../../../database/models/SequelizeTeam';
 import { teams } from '../../mocks/teams.mock';
 
+chai.use(chaiHttp);
+
 describe('Integration tests on the /teams/:id route - PUT update()', function () {
   beforeEach(function () { sinon.restore(); });
 
