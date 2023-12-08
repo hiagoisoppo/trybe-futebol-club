@@ -34,6 +34,6 @@ export default class TeamController {
   public async delete(req: Request, res: Response) {
     const { id } = req.params;
     await this.teamService.delete(Number(id));
-    res.status(204).send();
+    res.status(204).json();
   }
 }
