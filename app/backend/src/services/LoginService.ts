@@ -4,6 +4,7 @@ import UserModel from '../models/UserModel';
 import CustomError from '../utils/CustomError';
 import { ILogin } from '../Interfaces/ILogin';
 import TokenManager from '../utils/TokenManager';
+import Schema from '../schemas/login.schema';
 
 export default class LoginService {
   private userModel: UserModel;
@@ -12,6 +13,11 @@ export default class LoginService {
   }
 
   public async login({ email, password }: ILogin): Promise<ServiceResponse<{ token: string }>> {
+    const { error } = Schema.login.validate({ email, password });
+    if (error) {
+      throw new CustomError('All fields must be filled', 401);
+    }
+
     const userFound = await this.userModel.findByEmail(email);
     if (!userFound || !bcrypt.compareSync(password, userFound.password)) {
       throw new CustomError('Invalid email or password', 401);

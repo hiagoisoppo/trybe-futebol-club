@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import LoginService from '../services/LoginService';
 
 export default class LoginController {
@@ -7,9 +7,13 @@ export default class LoginController {
     this.loginService = new LoginService();
   }
 
-  public async login(req: Request, res: Response) {
-    const { email, password } = req.body;
-    const response = await this.loginService.login({ email, password });
-    res.status(response.statusCode).json(response.data);
+  public async login(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { email, password } = req.body;
+      const response = await this.loginService.login({ email, password });
+      res.status(response.statusCode).json(response.data);
+    } catch (err) {
+      next(err);
+    }
   }
 }
