@@ -13,9 +13,13 @@ export default class LoginService {
   }
 
   public async login({ email, password }: ILogin): Promise<ServiceResponse<{ token: string }>> {
+    if (!email || !password) {
+      throw new CustomError('All fields must be filled', 400);
+    }
+
     const { error } = Schema.login.validate({ email, password });
     if (error) {
-      throw new CustomError('All fields must be filled', 401);
+      throw new CustomError('Invalid email or password', 401);
     }
 
     const userFound = await this.userModel.findByEmail(email);
