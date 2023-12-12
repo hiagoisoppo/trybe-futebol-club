@@ -9,7 +9,7 @@ describe('Unit test on UserModel find()', async function () {
   const model = new UserModel();
   beforeEach(function () { sinon.restore(); });
 
-  it('', async function () {
+  it('Should return a user data', async function () {
     const mock = SequelizeUser.build(user1);
     sinon.stub(SequelizeUser, 'findByPk').resolves(mock);
 
@@ -29,7 +29,7 @@ describe('Unit test on UserModel findByEmail()', async function () {
   const model = new UserModel();
   beforeEach(function () { sinon.restore(); });
 
-  it('', async function () {
+  it('Should return a user data', async function () {
     const mock = SequelizeUser.build(user2);
     sinon.stub(SequelizeUser, 'findOne').resolves(mock);
 
@@ -42,6 +42,5 @@ describe('Unit test on UserModel findByEmail()', async function () {
     chai.expect(response?.dataValues.role).to.equal(user2.role);
     chai.expect(response?.dataValues.email).to.equal(user2.email);
     chai.expect(response?.dataValues.password).to.equal(user2.password);
-    
   })
 })
