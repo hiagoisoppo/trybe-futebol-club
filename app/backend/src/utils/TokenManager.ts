@@ -1,5 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import ITokenPayload from '../Interfaces/ITokenPayload';
+import CustomError from './CustomError';
 
 const secret = process.env.JWT_SECRET || 'secret';
 
@@ -13,8 +14,12 @@ function extract(bearerToken: string): string {
 }
 
 function validate(token: string): ITokenPayload {
-  const data = jwt.verify(token, secret) as ITokenPayload;
-  return data;
+  try {
+    const data = jwt.verify(token, secret) as ITokenPayload;
+    return data;
+  } catch (err: unknown) {
+    throw new CustomError('Token must be a valid token', 401);
+  }
 }
 
 export default {
