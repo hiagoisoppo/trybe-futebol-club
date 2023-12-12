@@ -28,10 +28,23 @@ export default class LoginService {
     }
 
     const token = TokenManager.generate({
+      id: userFound.id,
       username: userFound.username,
-      role: userFound.role,
     });
 
     return { statusCode: 200, data: { token } };
+  }
+
+  public async getRole(id: number | undefined): Promise<ServiceResponse<{ role: string }>> {
+    if (!id) {
+      throw new CustomError('User not found', 404);
+    }
+
+    const userFound = await this.userModel.find(id);
+    if (!userFound) {
+      throw new CustomError('User not found', 404);
+    }
+
+    return { statusCode: 200, data: { role: userFound.dataValues.role } };
   }
 }

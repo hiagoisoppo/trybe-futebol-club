@@ -1,15 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import CustomError from '../utils/CustomError';
 import TokenManager from '../utils/TokenManager';
+import AuthRequest from '../Interfaces/AuthRequest';
 
-interface AuthRequest extends Request {
-  user: {
-    username: string;
-    role: string;
-  };
-}
-
-function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
+export default function authMiddleware(req: AuthRequest, _res: Response, next: NextFunction) {
   try {
     const { authorization } = req.headers;
     if (!authorization) {
@@ -25,5 +19,3 @@ function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
     next(err);
   }
 }
-
-export default authMiddleware;

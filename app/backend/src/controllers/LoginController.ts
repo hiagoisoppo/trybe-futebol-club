@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import LoginService from '../services/LoginService';
 import CustomError from '../utils/CustomError';
+import AuthRequest from '../Interfaces/AuthRequest';
 
 export default class LoginController {
   private loginService: LoginService;
@@ -12,6 +13,16 @@ export default class LoginController {
     try {
       const { email, password } = req.body;
       const response = await this.loginService.login({ email, password });
+      res.status(response.statusCode).json(response.data);
+    } catch (err: unknown) {
+      err as CustomError;
+      next(err);
+    }
+  }
+
+  public async getRole(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const response = await this.loginService.getRole(req.user?.id);
       res.status(response.statusCode).json(response.data);
     } catch (err: unknown) {
       err as CustomError;

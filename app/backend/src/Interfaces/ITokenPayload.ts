@@ -1,6 +1,6 @@
 type ITokenPayload = {
+  id: number,
   username: string,
-  role: string,
 };
 
 export default ITokenPayload;
