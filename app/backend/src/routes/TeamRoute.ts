@@ -6,7 +6,7 @@ const router = Router();
 
 router.get(
   '/',
-  (req: Request, res: Response, next: NextFunction) => teamController.list(req, res, next),
+  (req: Request, res: Response) => teamController.list(req, res),
 );
 
 router.get(

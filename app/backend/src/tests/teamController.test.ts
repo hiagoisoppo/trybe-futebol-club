@@ -8,13 +8,15 @@ chai.use(sinonChai);
 import { serviceResponseCreate201, reqBodyCreate201, reqBodyUpdate200, serviceResponseUpdate200, serviceResponseList200, serviceResponseFind200, serviceResponseDelete204 } from './mocks/team.mock';
 import TeamService from '../services/TeamService'
 import TeamController from '../controllers/TeamController';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import CustomError from '../utils/CustomError';
 
 
 describe('Unit tests on TeamController create()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
+  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -26,7 +28,7 @@ describe('Unit tests on TeamController create()', function () {
     req.body = reqBodyCreate201;
     sinon.stub( TeamService.prototype, 'create').resolves(serviceResponseCreate201);
 
-    await controller.create(req, res);
+    await controller.create(req, res, next);
 
     chai.expect(res.status).to.have.been.calledWith(201);
     chai.expect(res.json).to.have.been.calledWith(serviceResponseCreate201.data);
@@ -37,6 +39,7 @@ describe('Unit tests on TeamController update()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
+  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -49,7 +52,7 @@ describe('Unit tests on TeamController update()', function () {
     req.params = { id: '6' };
     sinon.stub( TeamService.prototype, 'update').resolves(serviceResponseUpdate200);
 
-    await controller.update(req, res);
+    await controller.update(req, res, next);
 
     chai.expect(res.status).to.have.been.calledWith(200);
     chai.expect(res.json).to.have.been.calledWith(serviceResponseUpdate200.data);
@@ -81,6 +84,7 @@ describe('Unit tests on TeamController find()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
+  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -92,7 +96,7 @@ describe('Unit tests on TeamController find()', function () {
     req.params = { id: '4' };
     sinon.stub( TeamService.prototype, 'find').resolves(serviceResponseFind200);
 
-    await controller.find(req, res);
+    await controller.find(req, res, next);
 
     chai.expect(res.status).to.have.been.calledWith(200);
     chai.expect(res.json).to.have.been.calledWith(serviceResponseFind200.data);
@@ -103,6 +107,7 @@ describe('Unit tests on TeamController delete()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
+  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -114,7 +119,7 @@ describe('Unit tests on TeamController delete()', function () {
     req.params = { id: '1' };
     sinon.stub( TeamService.prototype, 'delete').resolves(serviceResponseDelete204);
 
-    await controller.delete(req, res);
+    await controller.delete(req, res, next);
 
     chai.expect(res.status).to.have.been.calledWith(204);
     chai.expect(res.json).to.have.been.calledWith();

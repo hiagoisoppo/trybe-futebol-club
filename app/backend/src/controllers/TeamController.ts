@@ -19,14 +19,9 @@ export default class TeamController {
     }
   }
 
-  public async list(_req: Request, res: Response, next: NextFunction) {
-    try {
-      const response = await this.teamService.list();
-      res.status(response.statusCode).json(response.data);
-    } catch (err: unknown) {
-      err as CustomError;
-      next(err);
-    }
+  public async list(_req: Request, res: Response) {
+    const response = await this.teamService.list();
+    res.status(response.statusCode).json(response.data);
   }
 
   public async create(req: Request, res: Response, next: NextFunction) {
