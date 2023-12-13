@@ -9,14 +9,12 @@ import { serviceResponseCreate201, reqBodyCreate201, reqBodyUpdate200, serviceRe
 import TeamService from '../services/TeamService'
 import TeamController from '../controllers/TeamController';
 import { NextFunction, Request, Response } from 'express';
-import CustomError from '../utils/CustomError';
 
 
 describe('Unit tests on TeamController create()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
-  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -39,7 +37,6 @@ describe('Unit tests on TeamController update()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
-  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -84,7 +81,6 @@ describe('Unit tests on TeamController find()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
-  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
@@ -107,7 +103,6 @@ describe('Unit tests on TeamController delete()', function () {
   const controller = new TeamController();
   const req = {} as Request;
   const res = {} as Response;
-  const next: NextFunction = () => {};
 
   beforeEach(function () {
     res.status = sinon.stub().returns(res);
