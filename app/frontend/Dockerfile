@@ -7,10 +7,7 @@ COPY package*.json ./
 # Instalar as dependências Node
 RUN npm install
 # Copiar o restante dos arquivos da aplicação para o container
-COPY src ./src
-COPY public ./public
-COPY .env ./
-COPY .dockerignore ./
+COPY . ./
 # Sinalize que aplicação expõe a porta 3000
 EXPOSE 3000
 # Configurar os comandos para iniciar a aplicação de acordo com as boas práticas
