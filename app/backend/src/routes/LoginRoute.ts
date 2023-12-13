@@ -1,4 +1,4 @@
-import { Request, Response, Router, NextFunction } from 'express';
+import { Request, Response, Router } from 'express';
 import LoginController from '../controllers/LoginController';
 import authMiddleware from '../middlewares/authMiddleware';
 
@@ -7,13 +7,13 @@ const router = Router();
 
 router.post(
   '/',
-  (req: Request, res: Response, next: NextFunction) => loginController.login(req, res, next),
+  (req: Request, res: Response) => loginController.login(req, res),
 );
 
 router.get(
   '/role',
   authMiddleware,
-  (req: Request, res: Response, next: NextFunction) => loginController.getRole(req, res, next),
+  (req: Request, res: Response) => loginController.getRole(req, res),
 );
 
 export default router;

@@ -28,7 +28,7 @@ describe('Unit tests on TeamController create()', function () {
     req.body = reqBodyCreate201;
     sinon.stub( TeamService.prototype, 'create').resolves(serviceResponseCreate201);
 
-    await controller.create(req, res, next);
+    await controller.create(req, res);
 
     chai.expect(res.status).to.have.been.calledWith(201);
     chai.expect(res.json).to.have.been.calledWith(serviceResponseCreate201.data);
@@ -52,7 +52,7 @@ describe('Unit tests on TeamController update()', function () {
     req.params = { id: '6' };
     sinon.stub( TeamService.prototype, 'update').resolves(serviceResponseUpdate200);
 
-    await controller.update(req, res, next);
+    await controller.update(req, res);
 
     chai.expect(res.status).to.have.been.calledWith(200);
     chai.expect(res.json).to.have.been.calledWith(serviceResponseUpdate200.data);
@@ -96,7 +96,7 @@ describe('Unit tests on TeamController find()', function () {
     req.params = { id: '4' };
     sinon.stub( TeamService.prototype, 'find').resolves(serviceResponseFind200);
 
-    await controller.find(req, res, next);
+    await controller.find(req, res);
 
     chai.expect(res.status).to.have.been.calledWith(200);
     chai.expect(res.json).to.have.been.calledWith(serviceResponseFind200.data);
@@ -119,7 +119,7 @@ describe('Unit tests on TeamController delete()', function () {
     req.params = { id: '1' };
     sinon.stub( TeamService.prototype, 'delete').resolves(serviceResponseDelete204);
 
-    await controller.delete(req, res, next);
+    await controller.delete(req, res);
 
     chai.expect(res.status).to.have.been.calledWith(204);
     chai.expect(res.json).to.have.been.calledWith();
