@@ -8,8 +8,8 @@ export default class MatchController {
   }
 
   public async list(req: Request, res: Response) {
-    const { inProgress } = req.params;
-    const response = await this.matchService.list(inProgress);
+    const { inProgress } = req.query;
+    const response = await this.matchService.list(inProgress as string);
     res.status(response.statusCode).json(response.data);
   }
 

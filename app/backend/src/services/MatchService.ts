@@ -37,20 +37,18 @@ export default class MatchService implements IMatchService {
   }
 
   public async list(inProgress: string): Promise<ServiceResponse<IMatch[]>> {
-    switch (inProgress) {
-      case 'true': {
-        const matches = await this.matchModel.listInProgress(true);
-        return { statusCode: 200, data: matches };
-      }
-      case 'false': {
-        const matches = await this.matchModel.listInProgress(false);
-        return { statusCode: 200, data: matches };
-      }
-      default: {
-        const matches = await this.matchModel.list();
-        return { statusCode: 200, data: matches };
-      }
+    if (inProgress === 'true') {
+      const matches = await this.matchModel.listInProgress(true);
+      return { statusCode: 200, data: matches };
     }
+
+    if (inProgress === 'false') {
+      const matches = await this.matchModel.listInProgress(false);
+      return { statusCode: 200, data: matches };
+    }
+
+    const matches = await this.matchModel.list();
+    return { statusCode: 200, data: matches };
   }
 
   public async update(
