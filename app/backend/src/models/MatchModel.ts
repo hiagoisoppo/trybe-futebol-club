@@ -16,6 +16,11 @@ export default class MatchModel implements IMatchModel {
     return matches;
   }
 
+  public async listInProgress(inProgress: boolean): Promise<SequelizeMatch[]> {
+    const matches = await this.model.findAll({ where: { inProgress } });
+    return matches;
+  }
+
   public async create(data: MatchLessId): Promise<SequelizeMatch> {
     const newMatch = await this.model.create(data);
     return newMatch;
@@ -25,5 +30,9 @@ export default class MatchModel implements IMatchModel {
     await this.model.update(data, { where: { id } });
     const updatedMatch = await this.model.findByPk(id);
     return updatedMatch;
+  }
+
+  public async finish(id: number): Promise<void> {
+    await this.model.update({ inProgress: false }, { where: { id } });
   }
 }

@@ -1,31 +1,31 @@
 import { Request, Response, Router } from 'express';
 import authMiddleware from '../middlewares/authMiddleware';
-// import MatchController from '../controllers/MatchController';
+import MatchController from '../controllers/MatchController';
 
-// const matchController = new MatchController();
+const matchController = new MatchController();
 const router = Router();
 
 router.get(
   '/',
-  (req: Request, res: Response) => res.send('EM ANDAMENTO 1'),
+  (req: Request, res: Response) => matchController.list(req, res),
 );
 
 router.patch(
   '/:id/finish',
   authMiddleware,
-  (req: Request, res: Response) => res.send('EM ANDAMENTO 2'),
+  (req: Request, res: Response) => matchController.finish(req, res),
 );
 
 router.patch(
   '/:id',
   authMiddleware,
-  (req: Request, res: Response) => res.send('EM ANDAMENTO 3'),
+  (req: Request, res: Response) => matchController.update(req, res),
 );
 
 router.post(
   '/',
   authMiddleware,
-  (req: Request, res: Response) => res.send('EM ANDAMENTO 4'),
+  (req: Request, res: Response) => matchController.create(req, res),
 );
 
 export default router;
