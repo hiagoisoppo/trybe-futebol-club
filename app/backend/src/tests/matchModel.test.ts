@@ -134,3 +134,27 @@ describe('Unit tests on MatchModel finish()', function () {
     chai.expect(response).to.be.undefined;
   })
 })
+
+describe('Unit tests on MatchModel find()', function () {
+  const model = new MatchModel();
+  beforeEach(function () {sinon.restore(); });
+
+  it('Should return a match data' , async function () {
+    const mock = SequelizeMatch.build(matches[0]);
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(mock);
+
+    const response = await model.find(1);
+
+    chai.expect(response).to.be.an('object');
+    chai.expect(response?.dataValues).to.have.keys(['id', 'homeTeamId', 'awayTeamId', 'homeTeamGoals', 'awayTeamGoals', 'inProgress']);
+    chai.expect(response?.dataValues).to.be.deep.equal(matches[0]);
+  })
+
+  it('Should return null' , async function () {
+    sinon.stub(SequelizeMatch, 'findByPk').resolves(null);
+
+    const response = await model.find(999);
+
+    chai.expect(response).to.be.null;
+  })
+})
