@@ -13,10 +13,6 @@ export default class MatchModel implements IMatchModel {
   }
 
   public async list(): Promise<SequelizeMatch[]> {
-    // const matches = await this.model.findAll({
-    //   include: ['homeTeam', 'awayTeam'],
-    //   attributes: { exclude: ['homeTeam.id', 'awayTeamid'] },
-    // });
     const matches = await this.model.findAll({
       include: [
         {
