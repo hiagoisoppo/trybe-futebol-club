@@ -117,6 +117,11 @@ const mockResponseUpdate200 = {
   },
 }
 
+const mockResponseFinish200 = {
+  statusCode: 200,
+  data: { message: 'Finished' },
+}
+
 const mockUpdateBody200 = {
   homeTeamGoals: 0,
   awayTeamGoals: 0,
@@ -133,4 +138,7 @@ export {
   mockResponseFind200,
   mockUpdateBody200,
   mockResponseUpdate200,
+  mockResponseFinish200,
 }
+
+

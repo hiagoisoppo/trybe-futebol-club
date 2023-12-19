@@ -8,6 +8,7 @@ import CustomError from '../utils/CustomError';
 import { matches, mockCreateBody201, mockCreateBody404a,
   mockCreateBody404b, mockCreateBody422, mockResponseCreate201,
   mockResponseFind200, 
+  mockResponseFinish200, 
   mockResponseUpdate200, 
   mockUpdateBody200} from './mocks/match.mock';
 import SequelizeTeam from '../database/models/SequelizeTeam';
@@ -127,6 +128,60 @@ describe('Unit tests on MatchService update()', function () {
     chai.expect(response).to.have.keys(['statusCode', 'data']);
     chai.expect(response.statusCode).to.equal(mockResponseUpdate200.statusCode);
     chai.expect(response.data).to.deep.equal(mockResponseUpdate200.data);
+  })
+
+  it('Should return throw a CustomError with status 404 and a message "Match not found"' , async function () {
+    const mock = SequelizeMatch.build(matches[0]);
+
+    sinon.stub(MatchModel.prototype, 'find').resolves(null);
+    sinon.stub(MatchModel.prototype, 'update').resolves(mock);
+
+    try {
+      const response = await service.update(1, mockCreateBody404a);
+    } catch (err: unknown) {
+      const error = err as CustomError;
+      chai.expect(error).to.be.an.instanceOf(CustomError);
+      chai.expect(error).to.have.property('message');
+      chai.expect(error).to.have.property('statusCode');
+      chai.expect(error.message).to.equal('Match not found');
+      chai.expect(error.statusCode).to.equal(404);
+    }
+  })
+
+  it('Should return throw a CustomError with status 404 and a message "Match not found"' , async function () {
+    const mock = SequelizeMatch.build(matches[0]);
+    const mockFind = SequelizeMatch.build(matches[0]);
+
+    sinon.stub(MatchModel.prototype, 'update').resolves(null);
+    sinon.stub(MatchModel.prototype, 'find').resolves(mockFind);
+
+    try {
+      const response = await service.update(1, mockCreateBody404b);
+    } catch (err: unknown) {
+      const error = err as CustomError;
+      chai.expect(error).to.be.an.instanceOf(CustomError);
+      chai.expect(error).to.have.property('message');
+      chai.expect(error).to.have.property('statusCode');
+      chai.expect(error.message).to.equal('Match not found');
+      chai.expect(error.statusCode).to.equal(404);
+    }
+  })
+})
+
+describe('Unit tests on MatchService finish()', function () {
+  const service = new MatchService();
+  beforeEach(function () {sinon.restore(); });
+
+  it('Should return a object with statusCode 200 and a finish message data' , async function () {
+    const mockFind = SequelizeMatch.build(matches[0]);
+    sinon.stub(MatchModel.prototype, 'find').resolves(mockFind);
+
+    const response = await service.finish(1);
+
+    chai.expect(response).to.be.an('object');
+    chai.expect(response).to.have.keys(['statusCode', 'data']);
+    chai.expect(response.statusCode).to.equal(mockResponseFinish200.statusCode);
+    chai.expect(response.data).to.deep.equal(mockResponseFinish200.data);
   })
 
   it('Should return throw a CustomError with status 404 and a message "Match not found"' , async function () {
