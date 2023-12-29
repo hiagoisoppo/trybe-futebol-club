@@ -8,7 +8,7 @@ chai.use(sinonChai);
 import { serviceResponseCreate201, reqBodyCreate201, reqBodyUpdate200, serviceResponseUpdate200, serviceResponseList200, serviceResponseFind200, serviceResponseDelete204 } from './mocks/team.mock';
 import TeamService from '../services/TeamService'
 import TeamController from '../controllers/TeamController';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 
 describe('Unit tests on TeamController create()', function () {
