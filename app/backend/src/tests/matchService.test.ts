@@ -6,7 +6,7 @@ import MatchModel from '../models/MatchModel';
 import MatchService from '../services/MatchService';
 import CustomError from '../utils/CustomError';
 import { matches, mockCreateBody201, mockCreateBody404a,
-  mockCreateBody404b, mockCreateBody422, mockResponseCreate201,
+  mockCreateBody404b, mockCreateBody422, mockList200, mockList200False, mockList200True, mockResponseCreate201,
   mockResponseFind200, 
   mockResponseFinish200, 
   mockResponseUpdate200, 
@@ -219,5 +219,47 @@ describe('Unit tests on MatchService finish()', function () {
       chai.expect(error.message).to.equal('Match not found');
       chai.expect(error.statusCode).to.equal(404);
     }
+  })
+})
+
+describe('Unit tests on MatchService list()', function () {
+  const service = new MatchService();
+  beforeEach(function () {sinon.restore(); });
+
+  it('Should return a object with statusCode 200 and a match list inProgress true' , async function () {
+    const mock = SequelizeMatch.bulkBuild(mockList200True.data);
+    sinon.stub(MatchModel.prototype, 'listInProgress').resolves(mock);
+
+    const response = await service.list('true');
+
+    chai.expect(response).to.be.an('object');
+    chai.expect(response).to.have.keys(['statusCode', 'data']);
+    chai.expect(response.statusCode).to.equal(mockList200True.statusCode);
+    chai.expect(response.data).to.deep.equal(mock);
+  })
+
+  it('Should return a object with statusCode 200 and a match list inProgress false' , async function () {
+    const mock = SequelizeMatch.bulkBuild(mockList200False.data);
+    sinon.stub(MatchModel.prototype, 'listInProgress').resolves(mock);
+
+    const response = await service.list('false');
+    response.data as SequelizeMatch[];
+
+    chai.expect(response).to.be.an('object');
+    chai.expect(response).to.have.keys(['statusCode', 'data']);
+    chai.expect(response.statusCode).to.equal(mockList200False.statusCode);
+    chai.expect(response.data).to.deep.equal(mock);
+  })
+
+  it('Should return a object with statusCode 200 and a match list' , async function () {
+    const mock = SequelizeMatch.bulkBuild(mockList200.data);
+    sinon.stub(MatchModel.prototype, 'listInProgress').resolves(mock);
+
+    const response = await service.list('false');
+
+    chai.expect(response).to.be.an('object');
+    chai.expect(response).to.have.keys(['statusCode', 'data']);
+    chai.expect(response.statusCode).to.equal(mockList200.statusCode);
+    chai.expect(response.data).to.deep.equal(mock);
   })
 })

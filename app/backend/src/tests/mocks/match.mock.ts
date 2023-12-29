@@ -127,6 +127,21 @@ const mockUpdateBody200 = {
   awayTeamGoals: 0,
 }
 
+const mockList200True = {
+  statusCode: 200,
+  data: matches.filter((match) => match.inProgress === true),
+}
+
+const mockList200False = {
+  statusCode: 200,
+  data: matches.filter((match) => match.inProgress === false),
+}
+
+const mockList200 = {
+  statusCode: 200,
+  data: matches,
+}
+
 export {
   matches,
   matchesWithTeams,
@@ -139,6 +154,9 @@ export {
   mockUpdateBody200,
   mockResponseUpdate200,
   mockResponseFinish200,
+  mockList200True,
+  mockList200False,
+  mockList200,
 }
 
 
