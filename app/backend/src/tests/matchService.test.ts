@@ -203,11 +203,10 @@ describe('Unit tests on MatchService finish()', function () {
   })
 
   it('Should return throw a CustomError with status 404 and a message "Match not found"' , async function () {
-    const mock = SequelizeMatch.build(matches[0]);
     const mockFind = SequelizeMatch.build(matches[0]);
 
-    sinon.stub(MatchModel.prototype, 'update').resolves(null);
     sinon.stub(MatchModel.prototype, 'find').resolves(mockFind);
+    sinon.stub(MatchModel.prototype, 'update').resolves(null);
 
     try {
       const response = await service.update(1, mockCreateBody404b);
@@ -253,9 +252,9 @@ describe('Unit tests on MatchService list()', function () {
 
   it('Should return a object with statusCode 200 and a match list' , async function () {
     const mock = SequelizeMatch.bulkBuild(mockList200.data);
-    sinon.stub(MatchModel.prototype, 'listInProgress').resolves(mock);
+    sinon.stub(MatchModel.prototype, 'list').resolves(mock);
 
-    const response = await service.list('false');
+    const response = await service.list('');
 
     chai.expect(response).to.be.an('object');
     chai.expect(response).to.have.keys(['statusCode', 'data']);

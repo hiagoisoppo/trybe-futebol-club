@@ -41,7 +41,6 @@ describe('Unit tests on MatchModel update()', function () {
 
     chai.expect(response).to.be.an('object');
     chai.expect(response).to.have.property('dataValues');
-    console.log(response.dataValues);
     chai.expect(response.dataValues).to.be.deep.equal(matches[1]);
   })
 
