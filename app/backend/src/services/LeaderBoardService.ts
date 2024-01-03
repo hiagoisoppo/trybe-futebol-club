@@ -11,13 +11,12 @@ export default class LeaderBoardService {
 
   public async list(teamFrom: string): Promise<ServiceResponse<ITeamStats[]>> {
     if (teamFrom === 'home') {
-      const results = await this.model.listHomeTeamStats();
-      return { statusCode: 200, data: results };
+      const homeResults = await this.model.listHomeTeamStats();
+      return { statusCode: 200, data: homeResults };
     }
-
     if (teamFrom === 'away') {
-      const results = await this.model.listAwayTeamStats();
-      return { statusCode: 200, data: results };
+      const awayResults = await this.model.listAwayTeamStats();
+      return { statusCode: 200, data: awayResults };
     }
 
     const results = await this.model.listTeamStats();
