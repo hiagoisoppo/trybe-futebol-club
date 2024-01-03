@@ -4,6 +4,7 @@ import SequelizeMatch from '../database/models/SequelizeMatch';
 import { IMatchModel } from '../Interfaces/Match/IMatchModel';
 import { MatchLessId } from '../Interfaces/Match/MatchLessId';
 import SequelizeTeam from '../database/models/SequelizeTeam';
+import ITeamStats from '../Interfaces/ITeamStats';
 
 export default class MatchModel implements IMatchModel {
   private model = SequelizeMatch;
@@ -64,38 +65,68 @@ export default class MatchModel implements IMatchModel {
     await this.model.update({ inProgress: false }, { where: { id } });
   }
 
-  public async listHomeTeamStats(): Promise<unknown> {
-    const matches = await this.model.sequelize?.query(`SELECT teams.team_name AS name,
-      SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 3
-      WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 END ) AS total_points,
-      COUNT(matches.id) AS total_games,
-      SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 1 ELSE 0 
-        END) AS total_victories,
-      SUM(CASE WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 
-        END) AS total_draws,
-      SUM(CASE WHEN matches.home_team_goals < matches.away_team_goals THEN 1 ELSE 0 
-        END) AS total_Losses,
-      SUM(home_team_goals) AS goals_favor,
-      SUM(away_team_goals) AS goals_own
-    FROM matches
-    LEFT JOIN teams ON teams.id = matches.home_team_id
-    GROUP BY name;
-    `, { type: QueryTypes.SELECT });
+  public async listHomeTeamStats(): Promise<ITeamStats[]> {
+    const matches = await this.model.sequelize?.query(`SELECT *,
+    (teamStats.goalsFavor - teamStats.goalsOwn) AS goalsBalance,
+    FORMAT(((teamStats.totalPoints / (teamStats.totalGames * 3)) * 100), 2) AS efficiency
+    FROM (SELECT teams.team_name AS name,
+    SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 3
+    WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 END ) AS totalPoints,
+    COUNT(matches.id) AS totalGames,
+    SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 1 ELSE 0 
+    END) AS totalVictories,
+    SUM(CASE WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 
+    END) AS totalDraws,
+    SUM(CASE WHEN matches.home_team_goals < matches.away_team_goals THEN 1 ELSE 0 
+    END) AS totalLosses, SUM(home_team_goals) AS goalsFavor, SUM(away_team_goals) AS goalsOwn
+    FROM matches LEFT JOIN teams ON teams.id = matches.home_team_id WHERE in_progress = false
+    GROUP BY name  ) AS teamStats
+    ORDER BY totalPoints DESC, totalVictories DESC, goalsBalance DESC, goalsFavor DESC;
+    `, { type: QueryTypes.SELECT }) as ITeamStats[];
 
     return matches;
   }
 
-  public async listAwayTeamStats(): Promise<SequelizeMatch[]> {
-    const matches = await this.model.findAll({
-      where: { inProgress: false },
-      include: [
-        {
-          model: SequelizeTeam,
-          attributes: ['teamName'],
-          as: 'awayTeam',
-        }],
-      group: ['awayTeamId'],
-    });
+  public async listAwayTeamStats(): Promise<ITeamStats[]> {
+    const matches = await this.model.sequelize?.query(`SELECT *,
+    (teamStats.goalsFavor - teamStats.goalsOwn) AS goalsBalance,
+    FORMAT(((teamStats.totalPoints / (teamStats.totalGames * 3)) * 100), 2) AS efficiency
+    FROM (SELECT teams.team_name AS name, SUM(CASE
+    WHEN matches.home_team_goals > matches.away_team_goals THEN 0
+    WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 3 END ) AS totalPoints,
+    COUNT(matches.id) AS totalGames,
+    SUM(CASE WHEN matches.home_team_goals < matches.away_team_goals THEN 1 ELSE 0 
+    END) AS totalVictories,
+    SUM(CASE WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 
+    END) AS totalDraws,
+    SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 1 ELSE 0 
+    END) AS totalLosses,
+    SUM(away_team_goals) AS goalsFavor, SUM(home_team_goals) AS goalsOwn
+    FROM matches LEFT JOIN teams ON teams.id = matches.away_team_id WHERE in_progress = false
+    GROUP BY name ) AS teamStats ORDER BY totalPoints DESC, totalVictories DESC,
+    goalsBalance DESC, goalsFavor DESC; `, { type: QueryTypes.SELECT }) as ITeamStats[];
+
+    return matches;
+  }
+
+  public async listTeamStats(): Promise<ITeamStats[]> {
+    const matches = await this.model.sequelize?.query(`SELECT *,
+    (teamStats.goalsFavor - teamStats.goalsOwn) AS goalsBalance,
+    FORMAT(((teamStats.totalPoints / (teamStats.totalGames * 3)) * 100), 2) AS efficiency
+    FROM (SELECT teams.team_name AS name, SUM(CASE
+    WHEN matches.home_team_goals > matches.away_team_goals THEN 0
+    WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 3 END ) AS totalPoints,
+    COUNT(matches.id) AS totalGames,
+    SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 0 ELSE 1
+    END) AS totalVictories,
+    SUM(CASE WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0
+    END) AS totalDraws,
+    SUM(CASE WHEN matches.home_team_goals < matches.away_team_goals THEN 0 ELSE 1
+    END) AS totalLosses,
+    SUM(away_team_goals) AS goalsFavor, SUM(home_team_goals) AS goalsOwn
+    FROM matches LEFT JOIN teams ON teams.id = matches.away_team_id WHERE in_progress = false
+    GROUP BY name ) AS teamStats ORDER BY totalPoints DESC, totalVictories DESC,
+    goalsBalance DESC, goalsFavor DESC; `, { type: QueryTypes.SELECT }) as ITeamStats[];
 
     return matches;
   }

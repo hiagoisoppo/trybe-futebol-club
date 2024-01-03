@@ -1,3 +1,4 @@
+import ITeamStats from '../Interfaces/ITeamStats';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import MatchModel from '../models/MatchModel';
 
@@ -8,7 +9,7 @@ export default class LeaderBoardService {
     this.model = new MatchModel();
   }
 
-  public async list(teamFrom: string): Promise<ServiceResponse<unknown>> {
+  public async list(teamFrom: string): Promise<ServiceResponse<ITeamStats[]>> {
     if (teamFrom === 'home') {
       const results = await this.model.listHomeTeamStats();
       return { statusCode: 200, data: results };
@@ -19,7 +20,7 @@ export default class LeaderBoardService {
       return { statusCode: 200, data: results };
     }
 
-    const results = await this.model.listHomeTeamStats();
+    const results = await this.model.listTeamStats();
     return { statusCode: 200, data: results };
   }
 }
