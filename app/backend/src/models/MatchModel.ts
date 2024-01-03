@@ -1,3 +1,4 @@
+import { QueryTypes } from 'sequelize';
 import { MatchGoals } from '../Interfaces/Match/MatchGoals';
 import SequelizeMatch from '../database/models/SequelizeMatch';
 import { IMatchModel } from '../Interfaces/Match/IMatchModel';
@@ -61,5 +62,41 @@ export default class MatchModel implements IMatchModel {
 
   public async finish(id: number): Promise<void> {
     await this.model.update({ inProgress: false }, { where: { id } });
+  }
+
+  public async listHomeTeamStats(): Promise<unknown> {
+    const matches = await this.model.sequelize?.query(`SELECT teams.team_name AS name,
+      SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 3
+      WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 END ) AS total_points,
+      COUNT(matches.id) AS total_games,
+      SUM(CASE WHEN matches.home_team_goals > matches.away_team_goals THEN 1 ELSE 0 
+        END) AS total_victories,
+      SUM(CASE WHEN matches.home_team_goals = matches.away_team_goals THEN 1 ELSE 0 
+        END) AS total_draws,
+      SUM(CASE WHEN matches.home_team_goals < matches.away_team_goals THEN 1 ELSE 0 
+        END) AS total_Losses,
+      SUM(home_team_goals) AS goals_favor,
+      SUM(away_team_goals) AS goals_own
+    FROM matches
+    LEFT JOIN teams ON teams.id = matches.home_team_id
+    GROUP BY name;
+    `, { type: QueryTypes.SELECT });
+
+    return matches;
+  }
+
+  public async listAwayTeamStats(): Promise<SequelizeMatch[]> {
+    const matches = await this.model.findAll({
+      where: { inProgress: false },
+      include: [
+        {
+          model: SequelizeTeam,
+          attributes: ['teamName'],
+          as: 'awayTeam',
+        }],
+      group: ['awayTeamId'],
+    });
+
+    return matches;
   }
 }
