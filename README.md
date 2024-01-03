@@ -87,7 +87,7 @@ Trybe Futebol Clube is a full stack web application developed in a monorepo with
   <summary><strong>API REST - Endpoints</strong></summary>
   
   ### `GET` /
-  - Response:
+  - Health check response:
   ```json
   {
     "ok": true
